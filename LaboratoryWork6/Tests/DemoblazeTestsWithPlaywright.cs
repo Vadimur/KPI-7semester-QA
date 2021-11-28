@@ -5,6 +5,7 @@ using Microsoft.Playwright;
 using NUnit.Framework;
 using NUnit.Framework.Interfaces;
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,9 +13,10 @@ namespace LaboratoryWork6.Tests
 {
     public class DemoblazeTestsWithPlaywright
     {
-        private const string TraceFolder = "results/traces";
-        private const string VideosFolderPath = "results/videos";
-        private const string FailedTestsVideoFolderPath = "results/videos/fail";
+        private const string ResultsFolderPath = "results";
+        private readonly string TraceFolderPath = $"{ResultsFolderPath}/traces";
+        private readonly string VideosFolderPath = $"{ResultsFolderPath}/videos";
+        private readonly string FailedTestsVideoFolderPath = $"{ResultsFolderPath}/videos/fail";
 
         private IPlaywright _playwright;
         private IBrowser _browser;
@@ -24,6 +26,11 @@ namespace LaboratoryWork6.Tests
         [OneTimeSetUp]
         public async Task OneTimeSetUp()
         {
+            if (Directory.Exists(ResultsFolderPath))
+            {
+                Directory.Delete(ResultsFolderPath, true);
+            }
+
             _playwright = await Playwright.CreateAsync();
             _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
             {
@@ -60,7 +67,7 @@ namespace LaboratoryWork6.Tests
             {
                 stopTraceOptions = new TracingStopOptions
                 {
-                    Path = $"{TraceFolder}/{TestContext.CurrentContext.Test.Name}.zip"
+                    Path = $"{TraceFolderPath}/{TestContext.CurrentContext.Test.Name}.zip"
                 };
 
                 await _page.Video.SaveAsAsync($"{FailedTestsVideoFolderPath}/{TestContext.CurrentContext.Test.Name}.webm");
@@ -306,6 +313,20 @@ namespace LaboratoryWork6.Tests
 
             //assertion
             _page.Url.Should().Be(MainPage.URL);
+        }
+
+        [Test]
+        public async Task AlwaysFailingTest()
+        {
+            //arrange
+            string fakeUrl = "https://google.com";
+
+            //act 
+            var mainPage = new MainPage(_page);
+            await mainPage.GotoAsync();
+
+            //assert
+            _page.Url.Should().Be(fakeUrl);
         }
     }
 }
