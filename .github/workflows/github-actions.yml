@@ -1,11 +1,12 @@
 on: [push]
 
 env:
-  os: ubuntu-latest
+  RUNNER_OS: ubuntu-latest
+
 jobs:
   build:
     name: Project Build
-    runs-on: ${{ env.os }}
+    runs-on: ${{ env.RUNNER_OS }}
     strategy:
       matrix:
         dotnet-version: [ '3.1.x', '5.0.x' ]
@@ -23,7 +24,7 @@ jobs:
   test:
     name: Unit Testing
     needs: build
-    runs-on: ${{ env.os }}
+    runs-on: ${{ env.RUNNER_OS }}
     steps:
       - uses: actions/checkout@v2.1.0
       - run: dotnet test
