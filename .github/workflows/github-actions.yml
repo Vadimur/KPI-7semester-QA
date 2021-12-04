@@ -6,7 +6,7 @@ env:
 jobs:
   build:
     name: Project Build
-    runs-on: ${{ RUNNER_OS }}
+    runs-on: $RUNNER_OS
     strategy:
       matrix:
         dotnet-version: [ '3.1.x', '5.0.x' ]
@@ -24,7 +24,7 @@ jobs:
   test:
     name: Unit Testing
     needs: build
-    runs-on: ${{ RUNNER_OS }}
+    runs-on: $RUNNER_OS
     steps:
       - uses: actions/checkout@v2.1.0
       - run: dotnet test
