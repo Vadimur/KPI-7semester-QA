@@ -275,8 +275,9 @@ namespace LaboratoryWork5
             //assertion
             page.Url.Should().Be(cartUrl);
 
+            await page.WaitForSelectorAsync("#tbodyid > tr.success");
+
             //assertion
-            await Task.Delay(1000);
             var tableRows = await page.QuerySelectorAllAsync("#tbodyid > tr");
             tableRows.Count.Should().Be(1);
 
